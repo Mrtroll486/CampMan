@@ -1,10 +1,10 @@
 package org.guan.campman.Controller;
 
-import jakarta.transaction.Transactional;
-import org.guan.campman.model.NewCampReg;
-import org.guan.campman.model.PagedCoach;
-import org.guan.campman.model.ReturnData;
-import org.guan.campman.service.CampService;
+import org.guan.campman.Model.DetailedCamp;
+import org.guan.campman.Model.PagedCamp;
+import org.guan.campman.Model.ReturnData;
+import org.guan.campman.Model.StudentAdj;
+import org.guan.campman.Service.CampService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,13 +18,23 @@ public class CampController {
     }
 
     @PostMapping("/api/newcamp")
-    public ReturnData addCamp(@RequestBody NewCampReg info) {
+    public ReturnData addCamp(@RequestBody DetailedCamp info) {
         return campService.addCamp(info);
     }
 
     @GetMapping("/api/hpinfo")
-    public PagedCoach getHomePageInfo(@RequestParam("page_size") int pageSize,
-                                      @RequestParam("page_index") int pageIndex ) {
+    public PagedCamp getHomePageInfo(@RequestParam("page_size") int pageSize,
+                                     @RequestParam("page_index") int pageIndex ) {
         return campService.getPagedCoach(pageSize, pageIndex);
+    }
+
+    @GetMapping("/api/campdetails")
+    public DetailedCamp getDetailedCamp(@RequestParam("id") int id) {
+        return campService.getDetailedCamp(id);
+    }
+
+    @PostMapping("/api/stualt")
+    public ReturnData studentAdj(@RequestBody StudentAdj adj) {
+        return campService.stuAdjustment(adj);
     }
 }

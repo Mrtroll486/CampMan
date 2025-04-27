@@ -1,7 +1,7 @@
 package org.guan.campman.Controller;
 
-import org.guan.campman.model.Admin;
-import org.guan.campman.repository.AdminRepo;
+import org.guan.campman.Model.Admin;
+import org.guan.campman.Repository.AdminRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
