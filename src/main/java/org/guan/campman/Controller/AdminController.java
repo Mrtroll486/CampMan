@@ -30,4 +30,9 @@ public class AdminController {
     public ReturnData adminAdj(@RequestBody AdminAdj adminAdj) {
         return adminService.adminAdj(adminAdj);
     }
+
+    @PostMapping("/login")
+    public ReturnData login(@RequestBody Admin admin) {
+        return new ReturnData(0, "Vee!");
+    }
 }

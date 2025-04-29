@@ -58,6 +58,8 @@ public class CampService {
         LocalDate startDate = camp.getStartDate();
         // update camp_coach
         List<Coach> coaches = newCampReg.getCoaches();
+        // here, because the CoachTeachNum is queried from DB then these instances are automatically managed
+        // that is, you don't need to manually save it.
         Hashtable<Integer, CoachTeachNum> numStudents = new Hashtable<>();
 
         for(Coach coach : coaches) {
@@ -137,8 +139,10 @@ public class CampService {
         }
         List<CampStudent> campStudents = campStudentRepo.findByCampId(campId);
         for (CampStudent campStudent : campStudents) {
-            int studentId = campStudent.getStudentId();
-            studentRepo.findById(studentId).ifPresent(students::add);
+            if (!campStudent.isExitStatus()) {
+                int studentId = campStudent.getStudentId();
+                studentRepo.findById(studentId).ifPresent(students::add);
+            }
         }
         return new DetailedCamp(targetCamp, coaches, students);
     }
@@ -165,6 +169,13 @@ public class CampService {
             coachStudent.setHasQuited(true);
             coachStudentRepo.save(coachStudent);
 
+            // updating coach_teach_num
+            int coachId = coachStudent.getCoachId();
+            CoachTeachNum num = coachTeachNumRepo.findFirstByCoachId(coachId).orElseThrow(
+                    () -> new RollBackException("Item with such coachId doesn't exist"));
+            num.setNum(num.getNum() - 1);
+            coachTeachNumRepo.save(num);
+
             // updating student_exit
             StudentExit item = new StudentExit();
             item.setCampId(campId);
@@ -187,6 +198,13 @@ public class CampService {
             CoachStudent newCoachStudent = new CoachStudent(adj.getNewCoachId(), campId, studentId,
                     LocalDate.parse(adj.getDate()), camp.getStartDate().plusDays(camp.getCampLength()));
             coachStudentRepo.save(newCoachStudent);
+
+            CoachTeachNum oldNum = coachTeachNumRepo.findFirstByCoachId(coachStudent.getCoachId()).orElseThrow(
+                    () -> new RollBackException("Item with such coachId doesn't exist"));
+            oldNum.setNum(oldNum.getNum() - 1);
+            CoachTeachNum newNum = coachTeachNumRepo.findFirstByCoachId(adj.getNewCoachId()).orElseThrow(
+                    () -> new RollBackException("Item with such coachId doesn't exist"));
+            newNum.setNum(newNum.getNum() + 1);
 
             return new ReturnData(0, "success");
         }

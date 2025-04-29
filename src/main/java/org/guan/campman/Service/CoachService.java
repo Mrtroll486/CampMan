@@ -2,10 +2,7 @@ package org.guan.campman.Service;
 
 import org.guan.campman.Exception.RollBackException;
 import org.guan.campman.Model.*;
-import org.guan.campman.Repository.CoachGroupRepo;
-import org.guan.campman.Repository.CoachRepo;
-import org.guan.campman.Repository.CoachStudentRepo;
-import org.guan.campman.Repository.CoachTeachNumRepo;
+import org.guan.campman.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -141,6 +138,8 @@ public class CoachService {
     }
 
     public List<Coach> getCoaches() {
-        return coachRepo.findAll();
+        return coachRepo.findAllOrderByTeachNum();
     }
+
+
 }
